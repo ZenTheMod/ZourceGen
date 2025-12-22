@@ -222,7 +222,7 @@ internal sealed class AssetReloader : ModSystem
 
             foreach (string e in extensions)
             {
-                AssetWatcher.Filters.Add($""*{{e}}"");
+                AssetWatcher.Filters.Add($"*{e}");
             }
 
             AssetWatcher.Changed += AssetChanged;
@@ -234,7 +234,7 @@ internal sealed class AssetReloader : ModSystem
         }
         catch (Exception e)
         {
-            Mod.Logger.Warn($""Unable to load Asset Reloader! - {e}"");
+            Mod.Logger.Warn($"Unable to load Asset Reloader! - {e}");
         }
     }
 
@@ -249,7 +249,7 @@ internal sealed class AssetReloader : ModSystem
 
     private void AssetChanged(object sender, FileSystemEventArgs e)
     {
-        if (e.ChangeType.HasFlag(Created))
+        if (e.ChangeType.HasFlag(WatcherChangeTypes.Created))
         {
             return;
         }
@@ -310,7 +310,7 @@ internal sealed class AssetReloader : ModSystem
             throw new ArgumentException($"IAsset was not of type {nameof(Asset<>)}!");
         }
 
-        MethodInfo? getAssetWait = type.GetProperty(nameof(Asset<>.Wait), Public | Instance)?.GetGetMethod();
+        MethodInfo? getAssetWait = type.GetProperty(nameof(Asset<>.Wait), BindingFlags.Public | BindingFlags.Instance)?.GetGetMethod();
 
         Action wait = (Action?)getAssetWait?.Invoke(asset, []) ??
             throw new NullReferenceException($"Asset wait function was null!");
