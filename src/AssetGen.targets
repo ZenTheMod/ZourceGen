@@ -1,9 +1,9 @@
 <Project>
-	<!-- Include all assets as additional text -->
 	<ItemGroup>
+		<!-- Include all assets as additional text -->
 		<AdditionalFiles Include="$(MSBuildProjectFileDirectory)Assets\**"/>
-	</ItemGroup>
 
-	<ProjectReference Include=".\shader-reader\ShaderDecompiler.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer"/>
-	<ProjectReference Include=".\AssetGen\AssetGen.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer"/>
+		<ProjectReference Include="shader-reader\ShaderDecompiler.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer"/>
+		<ProjectReference Include="AssetGen\AssetGen.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer"/>
+	</ItemGroup>
 </Project>
