@@ -84,6 +84,7 @@ internal static class {{{name}}}
                 string parameterName = parameter.Value.Name!;
 
                 writer.AppendLine($$$"""
+
     public static {{{typeName}}} {{{propertyName}}}
     {
         set => Value.Parameters["{{{parameterName}}}"].SetValue(value);
@@ -92,6 +93,7 @@ internal static class {{{name}}}
             }
 
             writer.AppendLine($$$"""
+
     public static void Apply()
     {
         Value.CurrentTechnique.Passes[0].Apply();
@@ -108,6 +110,7 @@ internal static class {{{name}}}
                 foreach (Pass pass in technique.Passes)
                 {
                     writer.AppendLine($$$"""
+
     public static void Apply{{{CleanParameterName(pass.Name!)}}}()
     {
         Value.Techniques["{{{technique.Name!}}}"].Passes["{{{pass.Name!}}}"].Apply();

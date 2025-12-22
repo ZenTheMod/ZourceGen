@@ -7,7 +7,7 @@ namespace AssetGen.DataStructures;
 internal readonly record struct AssetFile
 {
     /// <summary>
-    /// Abstract shorthand directory..
+    /// Abstract shorthand directory.
     /// </summary>
     public string Directory { get; init; }
 
@@ -57,7 +57,7 @@ internal readonly record struct AssetFile
         /* 
          * Get the asset path -- without file extensions -- including the name of the root foler.
          * '.../ModSources/MyMod' => '.../ModSources'
-         * Directory => 'Textures/blahblah'
+         * Directory => 'Assets/Textures/blahblah'
          * AssetPath => 'ModName/Assets/Textures/blahblah/coolthing'
         */
         AssetPath = Path.ChangeExtension(fullPath[(Path.GetDirectoryName(rootDirectory)!.Length + 1)..], null);

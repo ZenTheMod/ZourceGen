@@ -100,8 +100,8 @@ internal static class {{{name}}}
                 }
 
                 writer.AppendLine($$$"""
-    public static void Draw{{{meshName}}}(GraphicsDevice device) =>
-        Value.Draw(device, {{{i}}});
+
+    public static void Draw{{{meshName}}}(GraphicsDevice device) => Value.Draw(device, {{{i}}});
 """);
             }
 

@@ -46,7 +46,9 @@ namespace {{{assemblyName}}}.{{{AssetNamespace}}}.{{{folder.Replace('/', '.')}}}
 [System.Runtime.CompilerServices.CompilerGenerated]
 internal static class Textures
 {
+    public const string PATH = "{{{assemblyName}}}/{{{folder}}}";
 """);
+
 
             HashSet<string> arrays = [];
 
@@ -74,6 +76,7 @@ internal static class Textures
 
                     // Arrays are a bit messy, unsure if this really works well.
                     writer.AppendLine($$$"""
+
     public static LazyAsset<Texture2D>[] {{{assetName}}} =
     [
 """);
@@ -91,6 +94,7 @@ internal static class Textures
                 }
 
                 writer.AppendLine($$$"""
+
     public static LazyAsset<Texture2D> {{{assetName}}} = new LazyAsset<Texture2D>("{{{assetPath}}}");
 """);
             }
