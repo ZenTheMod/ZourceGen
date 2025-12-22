@@ -1,7 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
-using ZourceGen.DataStructures;
+using AssetGen.DataStructures;
 
-namespace ZourceGen.Utils;
+namespace AssetGen.Utils;
 
 internal static partial class Utilities
 {

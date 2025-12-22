@@ -2,12 +2,10 @@
 using System;
 using System.IO;
 
-namespace ZourceGen.DataStructures;
+namespace AssetGen.DataStructures;
 
 internal readonly record struct AssetFile
 {
-    #region Public Properties
-
     /// <summary>
     /// Abstract shorthand directory..
     /// </summary>
@@ -29,33 +27,39 @@ internal readonly record struct AssetFile
 
     public AdditionalText Contents { get; init; }
 
-    #endregion
-
-    #region Public Constructors
-
     public AssetFile(AdditionalText contents, string rootDirectory)
     {
         string fullPath = contents.Path.Replace('\\', '/');
 
         if (!fullPath.StartsWith(rootDirectory))
+        {
             throw new ArgumentException($"Path '{fullPath}' did not contain root directory '{rootDirectory}'!");
+        }
 
-            // Get the shorthand directory used for namespaces and such.
+        // Shorthand directory used for namespaces.
         Directory =
             Path.GetDirectoryName(fullPath[(rootDirectory.Length + 1)..])!
             .Replace('\\', '/');
 
         if (Directory == string.Empty)
+        {
             InRoot = true;
+        }
 
-            // Remove reduntant 'Assets' path.
+        /*
+        // Remove reduntant 'Assets' path.
         if (Directory.StartsWith("Assets/"))
+        {
             Directory = Directory["Assets/".Length..];
+        }
+        */
 
-            // Get the asset path -- without file extensions -- including the name of the root foler.
-                // '.../ModSources/MyMod' => '.../ModSources'
-                // Directory => 'Textures/blahblah'
-                // AssetPath => 'ModName/Assets/Textures/blahblah/coolthing'
+        /* 
+         * Get the asset path -- without file extensions -- including the name of the root foler.
+         * '.../ModSources/MyMod' => '.../ModSources'
+         * Directory => 'Textures/blahblah'
+         * AssetPath => 'ModName/Assets/Textures/blahblah/coolthing'
+        */
         AssetPath = Path.ChangeExtension(fullPath[(Path.GetDirectoryName(rootDirectory)!.Length + 1)..], null);
 
         Name = Path.GetFileNameWithoutExtension(fullPath);
@@ -64,6 +68,4 @@ internal readonly record struct AssetFile
 
         Contents = contents;
     }
-
-    #endregion
 }

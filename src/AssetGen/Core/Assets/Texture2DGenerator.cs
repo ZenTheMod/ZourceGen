@@ -5,10 +5,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using ZourceGen.DataStructures;
-using ZourceGen.Utils;
+using AssetGen.DataStructures;
+using AssetGen.Utils;
 
-namespace ZourceGen.Assets.Generators;
+namespace AssetGen.Core.Generators;
 
 internal sealed class Texture2DGenerator : AssetGenerator
 {
@@ -16,11 +16,11 @@ internal sealed class Texture2DGenerator : AssetGenerator
 
     protected override IEnumerable<GeneratedFile> Write(ImmutableArray<AssetFile> textures, string assemblyName)
     {
-        StringBuilder writer = new();
+        var writer = new StringBuilder();
 
             // Group all textures by their abstract path.
-        AliasedList<string, AssetFile> groupedPaths =
-            new(textures, i => i.Directory);
+        var groupedPaths =
+            new AliasedList<string, AssetFile>(textures, i => i.Directory);
 
         List<GeneratedFile> outputFiles = [];
 
@@ -36,15 +36,17 @@ internal sealed class Texture2DGenerator : AssetGenerator
 
             writer.Append(Header);
 
-            writer.Append(@$"
+            writer.Append($$$"""
 using Microsoft.Xna.Framework.Graphics;
 
-using {assemblyName}.{AssetNamespace}.DataStructures;
+using {{{assemblyName}}}.{{{AssetNamespace}}}.DataStructures;
 
-namespace {assemblyName}.{AssetNamespace}.{folder.Replace('/', '.')};
+namespace {{{assemblyName}}}.{{{AssetNamespace}}}.{{{folder.Replace('/', '.')}}};
 
+[System.Runtime.CompilerServices.CompilerGenerated]
 public static class Textures
-{{");
+{
+""");
 
             HashSet<string> arrays = [];
 
@@ -52,42 +54,48 @@ public static class Textures
             {
                 string name = texture.Name.CleanName();
 
-                    // Don't add new properties for numbered items.
+                // Don't add new properties for numbered items.
                 if (!arrays.Add(name))
+                {
                     continue;
+                }
 
                 string assetPath = texture.AssetPath;
 
                 string assetName = name.Capitalize();
 
-                    // Handle texture arrays.
+                // Texture arrays for numbered textures.
                 List<AssetFile> arrayItems = [.. items.Where(i => i.Name.CleanName() == name)];
 
                 if (arrayItems.Count() > 1)
                 {
-                        // Sort the array based on the numbers in the file name.
+                    // Sort the array based on the numbers in the file name.
                     string[] sortedPaths = GetSortedPaths(arrayItems);
 
-                        // Arrays are a bit messy, unsure if this really works well.
-                    writer.Append(@$"
-    public static LazyAsset<Texture2D>[] {assetName} =
-    [");
+                    // Arrays are a bit messy, unsure if this really works well.
+                    writer.Append($$$"""
+    public static LazyAsset<Texture2D>[] {{{assetName}}} =
+    [
+""");
 
                     foreach (string path in sortedPaths)
-                        writer.Append(@$"
-        new(""{path}""),");
+                        writer.Append($$$"""
+        new LazyAsset<Texture2D>("{{{path}}}"),
+""");
 
-                    writer.AppendLine(@$"
-    ];");
+                    writer.AppendLine($$$"""
+    ];
+""");
 
                     continue;
                 }
 
-                writer.AppendLine(@$"
-    public static LazyAsset<Texture2D> {assetName} = new(""{assetPath}"");");
+                writer.AppendLine($$$"""
+    public static LazyAsset<Texture2D> {{{assetName}}} = new LazyAsset<Texture2D>("{{{assetPath}}}");
+""");
             }
 
-            writer.Append(@$"}}");
+            writer.Append($$$"""}""");
 
             outputFiles.Add(new(Path.Combine(outputPath, "Textures.g.cs"), writer.ToString()));
 
@@ -95,25 +103,22 @@ public static class Textures
         }
 
         return outputFiles;
+
+        static string[] GetSortedPaths(IEnumerable<AssetFile> textures)
+        {
+            return
+                textures.OrderBy(t =>
+                {
+                    if (!int.TryParse(
+                        string.Concat(Regex.Matches(t.Name, "[0-9]")
+                        .OfType<Match>()
+                        .Select(m => m.ToString())
+                        ), out int result))
+                        return result;
+
+                    return 0;
+                })
+            .Select(t => t.AssetPath).ToArray();
+        }
     }
-
-    #region Private Methods
-
-    private static string[] GetSortedPaths(IEnumerable<AssetFile> textures) =>
-        [..
-            textures.OrderBy(t =>
-            {
-                if (!int.TryParse(
-                    string.Concat(Regex.Matches(t.Name, "[0-9]")
-                    .OfType<Match>()
-                    .Select(m => m.ToString())
-                    ), out int result))
-                    return result;
-
-                return 0;
-            })
-            .Select(t => t.AssetPath)
-        ];
-
-    #endregion
 }

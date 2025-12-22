@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace ZourceGen.Utils;
+namespace AssetGen.Utils;
 
 internal static partial class Utilities
 {

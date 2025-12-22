@@ -1,16 +1,14 @@
 ﻿using Microsoft.CodeAnalysis;
-using ZourceGen.DataStructures;
-using ZourceGen.Utils;
+using AssetGen.DataStructures;
+using AssetGen.Utils;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 
-namespace ZourceGen.Assets;
+namespace AssetGen.Core;
 
 internal abstract class AssetGenerator
 {
     public abstract string[] FileExtensions { get; }
-
-    #region Methods
 
     public void AddSource(SourceProductionContext context, ImmutableArray<AssetFile> assets, string assemblyName)
     {
@@ -23,8 +21,5 @@ internal abstract class AssetGenerator
             context.AddSource(file);
     }
 
-    protected virtual IEnumerable<GeneratedFile> Write(ImmutableArray<AssetFile> assets, string assemblyName) =>
-        [];
-
-    #endregion
+    protected virtual IEnumerable<GeneratedFile> Write(ImmutableArray<AssetFile> assets, string assemblyName) => [];
 }

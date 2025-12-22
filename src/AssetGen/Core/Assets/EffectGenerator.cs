@@ -5,37 +5,33 @@ using System.Collections.Immutable;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
-using ZourceGen.DataStructures;
+using AssetGen.DataStructures;
 
-namespace ZourceGen.Assets.Generators;
+namespace AssetGen.Core.Generators;
 
 internal sealed class EffectGenerator : AssetGenerator
 {
-    #region Private Fields
-
     private static readonly Dictionary<string, string> CSharpParemterTypes = new()
     {
-            // EffectParameter does not support strings, bytes or doubles.
+        // EffectParameter does not support strings, bytes or doubles.
         { "float", "float" },
         { "float2", "Vector2" },
         { "float3", "Vector3" },
         { "float4", "Vector4" },
         { "int", "int" },
         { "bool", "bool" },
-            // Strangly EffectParameter.SetValue(Matrix) only accepts the following sizes: 2x2, 3x4, 4x3, 4x4.
+        // Strangly EffectParameter.SetValue(Matrix) only accepts 2x2, 3x4, 4x3, and 4x4 matricies.
         { "float2x2", "Matrix" },
         { "float3x4", "Matrix" },
         { "float4x3", "Matrix" },
         { "float4x4", "Matrix" },
         { "matrix", "Matrix" },
-            // EffectParameter.SetValue allows for use of the base Texture class.
+        // EffectParameter.SetValue allows for use of the base Texture class.
         { "texture", "Texture" },
         { "texture2D", "Texture2D" },
         { "sampler", "Texture" }, // Unsure.
         { "sampler2D", "Texture2D" },
     };
-
-    #endregion
 
     public override string[] FileExtensions => ["fxc", "xnb"];
 
@@ -55,21 +51,22 @@ internal sealed class EffectGenerator : AssetGenerator
 
             writer.Append(Header);
 
-            writer.Append(@$"
+            writer.Append($$$"""
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-using {assemblyName}.{AssetNamespace}.DataStructures;
+using {{{assemblyName}}}.{{{AssetNamespace}}}.DataStructures;
 
-namespace {assemblyName}.{AssetNamespace}.{shader.Directory.Replace('/', '.')};
+namespace {{{assemblyName}}}.{{{AssetNamespace}}}.{{{shader.Directory.Replace('/', '.')}}};
 
-public static class {name}
-{{
-    public static LazyAsset<Effect> Shader => new(""{assetPath}"");
+public static class {{{name}}}
+{
+    public static LazyAsset<Effect> Shader => new("{{{assetPath}}}");
 
     public static Effect Value => Shader.Value;
 
-    public static bool IsReady => Shader.IsReady;");
+    public static bool IsReady => Shader.IsReady;
+""");
 
             Effect effect = Effect.ReadXnbOrFxc(shader.Contents.Path, out _);
 
@@ -78,31 +75,48 @@ public static class {name}
                 string typeName = CSharpParemterTypes[parameter.Value.Type.ToString()];
                 string propertyName = CleanParameterName(parameter.Value.Name!);
 
-                    // CS0542 check.
+                // CS0542 check.
                 if (propertyName == name)
+                {
                     propertyName = $"_{propertyName}";
+                }
 
                 string parameterName = parameter.Value.Name!;
 
-                writer.AppendLine(@$"
-    public static {typeName} {propertyName}
-        {{ set => Value.Parameters[""{parameterName}""].SetValue(value); }}");
+                writer.AppendLine($$$"""
+    public static {{{typeName}}} {{{propertyName}}}
+    {
+        set => Value.Parameters["{{{parameterName}}}"].SetValue(value);
+    }
+""");
             }
 
-            writer.AppendLine(@$"
-    public static void Apply() =>
+            writer.AppendLine($$$"""
+    public static void Apply()
+    {
         Value.CurrentTechnique.Passes[0].Apply();
+    }
 
-    public static void Apply(int pass) =>
-        Value.CurrentTechnique.Passes[pass].Apply();");
+    public static void Apply(int pass)
+    {
+        Value.CurrentTechnique.Passes[pass].Apply();
+    }
+""");
 
             foreach (Technique technique in effect.Techniques)
+            {
                 foreach (Pass pass in technique.Passes)
-                    writer.AppendLine(@$"
-    public static void Apply{CleanParameterName(pass.Name!)}() =>
-        Value.Techniques[""{technique.Name!}""].Passes[""{pass.Name!}""].Apply();");
+                {
+                    writer.AppendLine($$$"""
+    public static void Apply{{{CleanParameterName(pass.Name!)}}}()
+    {
+        Value.Techniques["{{{technique.Name!}}}"].Passes["{{{pass.Name!}}}"].Apply();
+    }
+""");
+                }
+            }
 
-            writer.Append(@$"}}");
+            writer.Append($$$"""}""");
 
             outputFiles.Add(new(Path.Combine(outputPath, $"{name}.g.cs"), writer.ToString()));
 
@@ -110,9 +124,11 @@ public static class {name}
         }
 
         return outputFiles;
-    }
 
         // Notably removes the 'u' uniform prefix.
-    private static string CleanParameterName(string name) =>
-        Regex.Replace(name, "^u?(?=[A-Z])", string.Empty).Capitalize();
+        static string CleanParameterName(string name)
+        {
+            return Regex.Replace(name, "^u?(?=[A-Z])", string.Empty).Capitalize();
+        }
+    }
 }
