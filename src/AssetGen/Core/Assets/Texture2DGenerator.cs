@@ -34,9 +34,9 @@ internal sealed class Texture2DGenerator : AssetGenerator
 
             string outputPath = folder;
 
-            writer.Append(Header);
+            writer.AppendLine(Header);
 
-            writer.Append($$$"""
+            writer.AppendLine($$$"""
 using Microsoft.Xna.Framework.Graphics;
 
 using {{{assemblyName}}}.{{{AssetNamespace}}}.DataStructures;
@@ -44,7 +44,7 @@ using {{{assemblyName}}}.{{{AssetNamespace}}}.DataStructures;
 namespace {{{assemblyName}}}.{{{AssetNamespace}}}.{{{folder.Replace('/', '.')}}};
 
 [System.Runtime.CompilerServices.CompilerGenerated]
-public static class Textures
+internal static class Textures
 {
 """);
 
@@ -73,13 +73,13 @@ public static class Textures
                     string[] sortedPaths = GetSortedPaths(arrayItems);
 
                     // Arrays are a bit messy, unsure if this really works well.
-                    writer.Append($$$"""
+                    writer.AppendLine($$$"""
     public static LazyAsset<Texture2D>[] {{{assetName}}} =
     [
 """);
 
                     foreach (string path in sortedPaths)
-                        writer.Append($$$"""
+                        writer.AppendLine($$$"""
         new LazyAsset<Texture2D>("{{{path}}}"),
 """);
 
@@ -95,7 +95,7 @@ public static class Textures
 """);
             }
 
-            writer.Append($$$"""}""");
+            writer.AppendLine($$$"""}""");
 
             outputFiles.Add(new(Path.Combine(outputPath, "Textures.g.cs"), writer.ToString()));
 

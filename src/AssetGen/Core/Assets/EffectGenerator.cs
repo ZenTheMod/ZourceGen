@@ -49,9 +49,9 @@ internal sealed class EffectGenerator : AssetGenerator
 
             string assetPath = shader.AssetPath;
 
-            writer.Append(Header);
+            writer.AppendLine(Header);
 
-            writer.Append($$$"""
+            writer.AppendLine($$$"""
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -59,7 +59,7 @@ using {{{assemblyName}}}.{{{AssetNamespace}}}.DataStructures;
 
 namespace {{{assemblyName}}}.{{{AssetNamespace}}}.{{{shader.Directory.Replace('/', '.')}}};
 
-public static class {{{name}}}
+internal static class {{{name}}}
 {
     public static LazyAsset<Effect> Shader => new("{{{assetPath}}}");
 
@@ -116,7 +116,7 @@ public static class {{{name}}}
                 }
             }
 
-            writer.Append($$$"""}""");
+            writer.AppendLine($$$"""}""");
 
             outputFiles.Add(new(Path.Combine(outputPath, $"{name}.g.cs"), writer.ToString()));
 

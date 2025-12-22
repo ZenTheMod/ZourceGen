@@ -3,7 +3,7 @@
 		<!-- Include all assets as additional text -->
 		<AdditionalFiles Include="$(MSBuildProjectFileDirectory)Assets\**"/>
 
-		<ProjectReference Include="shader-reader\ShaderDecompiler.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer"/>
-		<ProjectReference Include="AssetGen\AssetGen.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer"/>
+		<ProjectReference Include="$(MSBuildThisFileDirectory)shader-reader\ShaderDecompiler.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer"/>
+		<ProjectReference Include="$(MSBuildThisFileDirectory)AssetGen\AssetGen.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer"/>
 	</ItemGroup>
 </Project>

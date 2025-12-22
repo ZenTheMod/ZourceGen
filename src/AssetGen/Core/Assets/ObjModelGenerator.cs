@@ -55,7 +55,7 @@ using {{{assemblyName}}}.{{{AssetNamespace}}}.DataStructures;
 namespace {{{assemblyName}}}.{{{AssetNamespace}}}.{{{model.Directory.Replace('/', '.')}}};
 
 [System.Runtime.CompilerServices.CompilerGenerated]
-public static class {{{name}}}
+internal static class {{{name}}}
 {
     public static LazyAsset<ObjModel> Model => new("{{{assetPath}}}");
 
@@ -105,7 +105,7 @@ public static class {{{name}}}
 """);
             }
 
-            writer.Append($$$"""}""");
+            writer.AppendLine($$$"""}""");
 
             outputFiles.Add(new(Path.Combine(outputPath, $"{name}.g.cs"), writer.ToString()));
 
@@ -121,8 +121,9 @@ public static class {{{name}}}
     {
         StringBuilder writer = new();
 
-        writer.Append(Header);
-        writer.Append($$$"""
+        writer.AppendLine(Header);
+
+        writer.AppendLine($$$"""
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -138,7 +139,7 @@ using Terraria.ModLoader;
 namespace {{{assemblyName}}}.{{{AssetNamespace}}}.DataStructures;
 
 [System.Runtime.CompilerServices.CompilerGenerated]
-public sealed class ObjModel : IDisposable
+internal sealed class ObjModel : IDisposable
 {
     private VertexPositionNormalTexture[]? Vertices;
 
@@ -393,8 +394,9 @@ public sealed class ObjModel : IDisposable
     {
         StringBuilder writer = new();
 
-        writer.Append(Header);
-        writer.Append($$$"""
+        writer.AppendLine(Header);
+
+        writer.AppendLine($$$"""
 using ReLogic.Content;
 using ReLogic.Content.Readers;
 using ReLogic.Utilities;
