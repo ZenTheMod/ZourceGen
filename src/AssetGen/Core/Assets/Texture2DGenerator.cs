@@ -109,12 +109,16 @@ internal static class Textures
             return
                 textures.OrderBy(t =>
                 {
-                    if (!int.TryParse(
-                        string.Concat(Regex.Matches(t.Name, "[0-9]")
-                        .OfType<Match>()
-                        .Select(m => m.ToString())
-                        ), out int result))
+                    string match = string.Concat(
+                            Regex.Matches(t.Name, "[0-9]")
+                            .OfType<Match>()
+                            .Select(m => m.ToString())
+                        );
+
+                    if (int.TryParse(match, out int result))
+                    {
                         return result;
+                    }
 
                     return 0;
                 })
