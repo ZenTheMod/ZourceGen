@@ -38,7 +38,7 @@ internal sealed class ObjModelGenerator : AssetGenerator
 
             string source = model.Contents.GetText()!.ToString();
 
-            writer.AppendLine(Header);
+            writer.AppendLine(HEADER);
 
             writer.AppendLine($$$"""
 using ReLogic.Content;
@@ -50,9 +50,9 @@ using Terraria.ModLoader;
 
 using System;
 
-using {{{assemblyName}}}.{{{AssetNamespace}}}.DataStructures;
+using {{{assemblyName}}}.{{{ASSET_NAMESPACE}}}.DataStructures;
 
-namespace {{{assemblyName}}}.{{{AssetNamespace}}}.{{{model.Directory.Replace('/', '.')}}};
+namespace {{{assemblyName}}}.{{{ASSET_NAMESPACE}}}.{{{model.Directory.Replace('/', '.')}}};
 
 [System.Runtime.CompilerServices.CompilerGenerated]
 internal static class {{{name}}}
@@ -121,7 +121,7 @@ internal static class {{{name}}}
     {
         StringBuilder writer = new();
 
-        writer.AppendLine(Header);
+        writer.AppendLine(HEADER);
 
         writer.AppendLine($$$"""
 using Microsoft.Xna.Framework;
@@ -136,7 +136,7 @@ using Terraria.ModLoader;
 
 #nullable enable
 
-namespace {{{assemblyName}}}.{{{AssetNamespace}}}.DataStructures;
+namespace {{{assemblyName}}}.{{{ASSET_NAMESPACE}}}.DataStructures;
 
 [System.Runtime.CompilerServices.CompilerGenerated]
 internal sealed class ObjModel : IDisposable
@@ -394,7 +394,7 @@ internal sealed class ObjModel : IDisposable
     {
         StringBuilder writer = new();
 
-        writer.AppendLine(Header);
+        writer.AppendLine(HEADER);
 
         writer.AppendLine($$$"""
 using ReLogic.Content;
@@ -407,11 +407,11 @@ using System.Threading.Tasks;
 using Terraria;
 using Terraria.ModLoader;
 
-using {{{assemblyName}}}.{{{AssetNamespace}}}.DataStructures;
+using {{{assemblyName}}}.{{{ASSET_NAMESPACE}}}.DataStructures;
 
 #nullable enable
 
-namespace {{{assemblyName}}}.{{{AssetNamespace}}}.AssetReaders;
+namespace {{{assemblyName}}}.{{{ASSET_NAMESPACE}}}.AssetReaders;
 
 /// <summary>
 /// This system must be manually loaded in <see cref="Mod.CreateDefaultContentSource"/> to have <see cref="ObjModel"/>s load.<br/><br/>

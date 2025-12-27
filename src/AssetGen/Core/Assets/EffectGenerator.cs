@@ -11,7 +11,7 @@ namespace AssetGen.Core.Generators;
 
 internal sealed class EffectGenerator : AssetGenerator
 {
-    private static readonly Dictionary<string, string> CSharpParemterTypes = new()
+    private static readonly Dictionary<string, string> shader_types = new()
     {
         // EffectParameter does not support strings, bytes or doubles.
         { "float", "float" },
@@ -49,15 +49,15 @@ internal sealed class EffectGenerator : AssetGenerator
 
             string assetPath = shader.AssetPath;
 
-            writer.AppendLine(Header);
+            writer.AppendLine(HEADER);
 
             writer.AppendLine($$$"""
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-using {{{assemblyName}}}.{{{AssetNamespace}}}.DataStructures;
+using {{{assemblyName}}}.{{{ASSET_NAMESPACE}}}.DataStructures;
 
-namespace {{{assemblyName}}}.{{{AssetNamespace}}}.{{{shader.Directory.Replace('/', '.')}}};
+namespace {{{assemblyName}}}.{{{ASSET_NAMESPACE}}}.{{{shader.Directory.Replace('/', '.')}}};
 
 internal static class {{{name}}}
 {
@@ -72,7 +72,7 @@ internal static class {{{name}}}
 
             foreach (Parameter parameter in effect.Parameters)
             {
-                string typeName = CSharpParemterTypes[parameter.Value.Type.ToString()];
+                string typeName = shader_types[parameter.Value.Type.ToString()];
                 string propertyName = CleanParameterName(parameter.Value.Name!);
 
                 // CS0542 check.

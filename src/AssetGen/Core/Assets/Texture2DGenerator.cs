@@ -34,14 +34,14 @@ internal sealed class Texture2DGenerator : AssetGenerator
 
             string outputPath = folder;
 
-            writer.AppendLine(Header);
+            writer.AppendLine(HEADER);
 
             writer.AppendLine($$$"""
 using Microsoft.Xna.Framework.Graphics;
 
-using {{{assemblyName}}}.{{{AssetNamespace}}}.DataStructures;
+using {{{assemblyName}}}.{{{ASSET_NAMESPACE}}}.DataStructures;
 
-namespace {{{assemblyName}}}.{{{AssetNamespace}}}.{{{folder.Replace('/', '.')}}};
+namespace {{{assemblyName}}}.{{{ASSET_NAMESPACE}}}.{{{folder.Replace('/', '.')}}};
 
 [System.Runtime.CompilerServices.CompilerGenerated]
 internal static class Textures
