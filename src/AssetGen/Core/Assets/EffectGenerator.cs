@@ -59,11 +59,23 @@ using {{{assemblyName}}}.{{{ASSET_NAMESPACE}}}.DataStructures;
 
 namespace {{{assemblyName}}}.{{{ASSET_NAMESPACE}}}.{{{shader.Directory.Replace('/', '.')}}};
 
+[System.Runtime.CompilerServices.CompilerGenerated]
 internal static class {{{name}}}
 {
     public static LazyAsset<Effect> Shader => new("{{{assetPath}}}");
 
-    public static Effect Value => Shader.Value;
+    public static Effect Value
+    {
+        get
+        {
+            if (!IsReady)
+            {
+                Shader.Wait();
+            }
+
+            return Shader.Value;
+        }
+    }
 
     public static bool IsReady => Shader.IsReady;
 """);

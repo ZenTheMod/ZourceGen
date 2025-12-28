@@ -1,9 +1,4 @@
 # Features
-## Asset Hot-Reloading
-
-Assets for your mod will automatically reload when debugging.
-
-TODO: Recompile shaders when modified. (Port from ZenSkies proper after testing.)
 
 ## Asset Generation
 
